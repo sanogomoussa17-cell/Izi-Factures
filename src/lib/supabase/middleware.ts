@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
     // Si déjà connecté et visite /login ou /register -> redirection vers le dashboard
     if (user && isAuthPage) {
       const url = request.nextUrl.clone();
-      url.pathname = '/';
+      url.pathname = '/dashboard';
       return NextResponse.redirect(url);
     }
   } catch (err) {

@@ -109,7 +109,7 @@ export default function DashboardLayout({
   };
 
   const navigation = [
-    { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+    { name: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Factures & Échéanciers', href: '/invoices', icon: FileText },
     { name: 'Clients & Créances', href: '/clients', icon: Users },
     { name: 'Fournisseurs & Achats', href: '/suppliers', icon: Building2 },
@@ -152,7 +152,7 @@ export default function DashboardLayout({
         <div className="space-y-6">
           {/* Logo & Brand */}
           <div className="flex items-center justify-between px-1">
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/dashboard" className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6B00] via-[#FF8A00] to-[#0E7A55] flex items-center justify-center text-white font-black text-lg shadow-md shadow-orange-500/20">
                 iZ
               </div>
@@ -179,7 +179,7 @@ export default function DashboardLayout({
           {/* Nav Links */}
           <nav className="space-y-1.5 px-1">
             {navigation.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
               const Icon = item.icon;
 
               return (

@@ -123,3 +123,49 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.7);
 }
+
+/* Landing Page Micro-Animations */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.35), 0 0 30px rgba(255, 107, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 107, 0, 0.6), 0 0 45px rgba(255, 107, 0, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.btn-shimmer {
+  background-size: 200% 100%;
+  background-image: linear-gradient(110deg, #FF6B00 0%, #FFA149 25%, #FF6B00 50%, #FFA149 75%, #FF6B00 100%);
+  animation: shimmer 5s infinite linear;
+}

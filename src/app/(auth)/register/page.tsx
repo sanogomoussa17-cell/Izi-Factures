@@ -109,7 +109,7 @@ function RegisterFormContent() {
         } catch (e) {}
       }
 
-      window.location.href = '/';
+      window.location.href = '/dashboard';
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Une erreur est survenue lors de la connexion');
@@ -213,7 +213,7 @@ function RegisterFormContent() {
           try {
             localStorage.setItem('izifactures_session', JSON.stringify(sessionData));
           } catch (e) {}
-          window.location.href = '/';
+          window.location.href = '/dashboard';
           return;
         }
 
@@ -234,7 +234,7 @@ function RegisterFormContent() {
             try {
               localStorage.setItem('izifactures_session', JSON.stringify(sessionData));
             } catch (e) {}
-            window.location.href = '/';
+            window.location.href = '/dashboard';
             return;
           }
 
@@ -246,7 +246,7 @@ function RegisterFormContent() {
         }
       }
 
-      window.location.href = '/';
+      window.location.href = '/dashboard';
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Une erreur est survenue lors de la création du compte');
