@@ -61,17 +61,42 @@ export default function DashboardPage() {
       setAllInvoices(invoicesData || []);
       setOrg(orgData);
 
+      let resolvedName = '';
+      let resolvedCompany = '';
+
+      // 1. Priorité Supabase Auth
       if (isSupabaseConfigured && supabase) {
-        const { data: authData } = await supabase.auth.getUser();
-        if (authData?.user) {
-          const meta = authData.user.user_metadata || {};
-          if (meta.full_name) setUserFullName(meta.full_name);
-          if (meta.company_name) setUserCompanyName(meta.company_name);
-          else if (!userFullName && authData.user.email) {
-            setUserFullName(authData.user.email.split('@')[0]);
+        try {
+          const { data: authData } = await supabase.auth.getUser();
+          if (authData?.user) {
+            const meta = authData.user.user_metadata || {};
+            if (meta.full_name) resolvedName = meta.full_name;
+            if (meta.company_name) resolvedCompany = meta.company_name;
+            if (!resolvedName && authData.user.email) {
+              resolvedName = authData.user.email.split('@')[0];
+            }
           }
+        } catch (e) {
+          console.warn('Auth user fetch error:', e);
         }
       }
+
+      // 2. Fallback Session Locale
+      try {
+        const stored = typeof window !== 'undefined' ? localStorage.getItem('izifactures_session') : null;
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.name && !resolvedName) resolvedName = parsed.name;
+          if (parsed.companyName && !resolvedCompany) resolvedCompany = parsed.companyName;
+        }
+      } catch (e) {}
+
+      // 3. Fallback Organisation
+      if (!resolvedCompany && orgData?.name) resolvedCompany = orgData.name;
+      if (!resolvedName && orgData?.name) resolvedName = orgData.name;
+
+      if (resolvedName) setUserFullName(resolvedName);
+      if (resolvedCompany) setUserCompanyName(resolvedCompany);
     } catch (err) {
       console.error('Failed to load dashboard data', err);
     } finally {

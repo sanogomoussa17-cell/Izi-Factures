@@ -227,12 +227,50 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
     try {
       const org = await this.getOrganization();
       const orgId = isValidUUID(invoiceData.orgId) ? invoiceData.orgId : isValidUUID(org?.id) ? org.id : DEFAULT_ORG_UUID;
-      const clientId = isValidUUID(invoiceData.clientId) ? invoiceData.clientId : 'bc251950-a38b-4e5d-a920-1d3ea94f8f6a';
+      let finalClientId = isValidUUID(invoiceData.clientId) ? invoiceData.clientId : null;
+
+      // Si le clientId n'est pas un UUID valide, trouver le client par son nom dans Supabase
+      if (!finalClientId && invoiceData.client?.name) {
+        const { data: matchedClient } = await supabase!
+          .from('clients')
+          .select('id')
+          .ilike('name', `%${invoiceData.client.name.trim()}%`)
+          .maybeSingle();
+        if (matchedClient?.id) {
+          finalClientId = matchedClient.id;
+        }
+      }
+
+      // Si le client n'existe pas encore dans Supabase, le créer immédiatement
+      if (!finalClientId && invoiceData.client?.name) {
+        const { data: createdClient } = await supabase!
+          .from('clients')
+          .insert({
+            org_id: orgId,
+            name: invoiceData.client.name,
+            company_name: invoiceData.client.companyName || '',
+            email: invoiceData.client.email || '',
+            phone: invoiceData.client.phone || '',
+            address: invoiceData.client.address || '',
+            city: invoiceData.client.city || 'Dakar',
+            country: invoiceData.client.country || 'Sénégal',
+          })
+          .select()
+          .single();
+        if (createdClient?.id) {
+          finalClientId = createdClient.id;
+        }
+      }
+
+      if (!finalClientId) {
+        const { data: firstClient } = await supabase!.from('clients').select('id').limit(1).maybeSingle();
+        finalClientId = firstClient?.id || '030bdb78-ba28-484b-bd4b-e1d9a1929aec';
+      }
 
       const payload = {
         org_id: orgId,
         invoice_number: invoiceData.invoiceNumber,
-        client_id: clientId,
+        client_id: finalClientId,
         status: invoiceData.status || 'DRAFT',
         payment_status: invoiceData.paymentStatus || 'UNPAID',
         payment_structure: invoiceData.paymentStructure || 'STANDARD',
@@ -985,7 +1023,23 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
       orgId: row.org_id,
       invoiceNumber: row.invoice_number,
       clientId: row.client_id,
-      client: row.client ? this.mapClientRow(row.client) : ({} as any),
+      client: row.client
+        ? this.mapClientRow(row.client)
+        : {
+            id: row.client_id || '',
+            orgId: row.org_id || DEFAULT_ORG_UUID,
+            name: row.client_name || 'Client Entreprise',
+            companyName: row.client_company || '',
+            email: '',
+            phone: '',
+            address: '',
+            city: 'Dakar',
+            country: 'Sénégal',
+            totalInvoiced: 0,
+            totalPaid: 0,
+            outstandingBalance: 0,
+            createdAt: row.created_at || new Date().toISOString(),
+          },
       status: row.status,
       paymentStatus: row.payment_status,
       paymentStructure: row.payment_structure,
