@@ -134,8 +134,21 @@ export default function DashboardPage() {
       const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
           const meta = session.user.user_metadata || {};
-          if (meta.full_name) setUserFullName(meta.full_name);
-          if (meta.company_name) setUserCompanyName(meta.company_name);
+          const name = meta.full_name || session.user.email?.split('@')[0] || '';
+          const comp = meta.company_name || '';
+          if (name) setUserFullName(name);
+          if (comp) setUserCompanyName(comp);
+          try {
+            const stored = localStorage.getItem('izifactures_session');
+            const parsed = stored ? JSON.parse(stored) : {};
+            localStorage.setItem('izifactures_session', JSON.stringify({
+              ...parsed,
+              id: session.user.id,
+              email: session.user.email,
+              name: name || parsed.name,
+              companyName: comp || parsed.companyName,
+            }));
+          } catch (e) {}
         }
       });
       return () => {

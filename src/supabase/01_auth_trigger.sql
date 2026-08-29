@@ -25,6 +25,7 @@ BEGIN
     -- Créer l'organisation pour cet utilisateur
     INSERT INTO public.organizations (
         name,
+        legal_name,
         email,
         phone,
         address,
@@ -36,6 +37,7 @@ BEGIN
         default_tax_rate_bps
     ) VALUES (
         company_name,
+        COALESCE(new.raw_user_meta_data->>'full_name', ''),
         new.email,
         user_phone,
         'Siège Social',

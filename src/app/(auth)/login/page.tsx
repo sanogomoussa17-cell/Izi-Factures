@@ -95,11 +95,28 @@ function LoginFormContent() {
 
         if (data?.user) {
           const meta = data.user.user_metadata || {};
+          let userName = meta.full_name || '';
+          let userCompany = meta.company_name || '';
+
+          if (!userName || !userCompany) {
+            try {
+              const { data: orgData } = await supabase
+                .from('organizations')
+                .select('name, legal_name')
+                .limit(1)
+                .maybeSingle();
+              if (orgData) {
+                if (!userCompany && orgData.name) userCompany = orgData.name;
+                if (!userName && orgData.legal_name) userName = orgData.legal_name;
+              }
+            } catch (e) {}
+          }
+
           const sessionData = {
             id: data.user.id,
             email: data.user.email,
-            name: meta.full_name || cleanEmail.split('@')[0],
-            companyName: meta.company_name || 'Mon Entreprise',
+            name: userName || cleanEmail.split('@')[0],
+            companyName: userCompany || 'Mon Entreprise',
             currency: meta.currency || 'XOF',
           };
           try {
