@@ -28,8 +28,12 @@ import {
   LayoutDashboard,
   LogOut,
   ChevronDown,
+  ShieldCheck,
+  Receipt,
+  BadgeCheck,
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
+import { BrandLogo } from '@/components/ui/brand-logo';
 
 export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -37,7 +41,6 @@ export default function LandingPage() {
   const [userFullName, setUserFullName] = useState<string>('');
   const [userCompanyName, setUserCompanyName] = useState<string>('');
   const [paymentSentToast, setPaymentSentToast] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'free' | 'pro' | 'business'>('pro');
 
   useEffect(() => {
     async function checkAuth() {
@@ -85,14 +88,7 @@ export default function LandingPage() {
       {/* 📱 TOP APP BAR (MOBILE)                                                   */}
       {/* ========================================================================= */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 h-16 bg-[#ffffff]/95 dark:bg-[#131922]/95 backdrop-blur-md border-b border-[#e1e3e4] dark:border-[#222c3a] shadow-xs md:hidden">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#FF6B00] via-[#FF8A00] to-[#0E7A55] flex items-center justify-center text-white font-black text-sm shadow-sm">
-            iZ
-          </div>
-          <span className="text-lg font-black font-display tracking-tight text-[#FF6B00]">
-            Izi<span className="text-[#0E7A55]">Factures</span>
-          </span>
-        </Link>
+        <BrandLogo size="sm" href="/" />
 
         <div className="flex items-center gap-2">
           {isAuthenticated && (
@@ -181,20 +177,8 @@ export default function LandingPage() {
       {/* ========================================================================= */}
       {/* 💻 TOP NAVIGATION (DESKTOP)                                              */}
       {/* ========================================================================= */}
-      <nav className="hidden md:flex items-center justify-between px-8 lg:px-24 py-4 bg-[#ffffff]/90 dark:bg-[#131922]/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#e1e3e4] dark:border-[#222c3a] transition-all">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6B00] via-[#FF8A00] to-[#0E7A55] flex items-center justify-center text-white font-black text-lg shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-            iZ
-          </div>
-          <div>
-            <span className="text-2xl font-black font-display tracking-tight text-[#FF6B00]">
-              Izi<span className="text-[#0E7A55]">Factures</span>
-            </span>
-            <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Facturation UEMOA
-            </span>
-          </div>
-        </Link>
+      <nav className="hidden md:flex items-center justify-between px-6 sm:px-10 lg:px-16 xl:px-24 py-4 bg-[#ffffff]/90 dark:bg-[#131922]/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#e1e3e4] dark:border-[#222c3a] transition-all">
+        <BrandLogo size="md" href="/" />
 
         {/* Links */}
         <div className="flex items-center gap-8 text-sm font-semibold">
@@ -257,158 +241,192 @@ export default function LandingPage() {
       {/* ========================================================================= */}
       <main className="flex-grow w-full pt-16 md:pt-0 pb-20 md:pb-0">
         {/* ======================================================================= */}
-        {/* 🌟 HERO SECTION                                                         */}
+        {/* 🌟 HERO SECTION (HARMONISÉE SANS VIDE AU MILIEU)                        */}
         {/* ======================================================================= */}
-        <section className="px-4 sm:px-8 lg:px-24 pt-8 sm:pt-12 md:pt-16 pb-12 sm:pb-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16 relative overflow-hidden">
+        <section className="px-4 sm:px-8 lg:px-12 xl:px-20 pt-8 sm:pt-12 md:pt-16 pb-12 sm:pb-20 relative overflow-hidden">
           {/* Subtle Background Glows */}
-          <div className="absolute top-10 left-10 w-96 h-96 bg-orange-400/10 rounded-full blur-3xl pointer-events-none -z-10" />
-          <div className="absolute top-40 right-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+          <div className="absolute top-10 left-1/4 w-96 h-96 bg-orange-400/10 rounded-full blur-3xl pointer-events-none -z-10" />
+          <div className="absolute top-40 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
-          {/* Left Column: Copy & CTAs */}
-          <div className="flex-1 flex flex-col gap-6 text-center lg:text-left z-10 relative">
-            <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/60 text-[#006d40] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-4 py-1.5 rounded-full self-center lg:self-start w-fit text-xs sm:text-sm font-bold shadow-2xs">
-              <Sparkles className="w-4 h-4 text-amber-500 fill-current" />
-              <span>La référence de facturation pour indépendants & PME</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-black font-display tracking-tight text-foreground leading-[1.15] max-w-2xl">
-              Facturez en Francs CFA, encaissez via{' '}
-              <span className="text-[#0055ff] inline-block hover:scale-105 transition-transform">Wave</span> &{' '}
-              <span className="text-[#ff7900] inline-block hover:scale-105 transition-transform">Orange Money</span>{' '}
-              en toute sérénité.
-            </h1>
-
-            <p className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Conçu pour les entrepreneurs et PME à Dakar, Abidjan, Cotonou, Bamako, Lomé et Ouagadougou. Simplifiez votre gestion financière, gérez la TVA UEMOA (18%) et accélérez vos encaissements.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-2">
-              <Link
-                href="/register"
-                className="btn-shimmer text-white text-base font-bold px-8 py-4 rounded-xl shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 min-h-[52px] animate-pulse-glow"
-              >
-                <span>Essayer Gratuitement</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <a
-                href="#demo"
-                className="bg-card hover:bg-muted/80 text-foreground border border-border text-base font-bold px-7 py-4 rounded-xl shadow-2xs hover:scale-[1.02] transition-all flex items-center justify-center gap-2 min-h-[52px]"
-              >
-                Voir le Tableau de Bord
-              </a>
-            </div>
-
-            {/* Trust Proof Metrics */}
-            <div className="flex items-center justify-center lg:justify-start gap-8 mt-6 border-t border-border pt-6">
-              <div className="flex flex-col">
-                <span className="text-2xl font-black font-mono text-foreground">10k+</span>
-                <span className="text-xs font-semibold text-muted-foreground">Factures payées</span>
+          {/* Centered Constrained Grid for Perfect Alignment */}
+          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-center">
+            {/* Left Column (7 cols on desktop) */}
+            <div className="lg:col-span-7 flex flex-col gap-6 text-center lg:text-left z-10">
+              <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/60 text-[#006d40] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-4 py-1.5 rounded-full self-center lg:self-start w-fit text-xs sm:text-sm font-bold shadow-2xs">
+                <Sparkles className="w-4 h-4 text-amber-500 fill-current" />
+                <span>La référence de facturation pour indépendants & PME</span>
               </div>
-              <div className="w-px h-10 bg-border" />
-              <div className="flex flex-col">
-                <span className="text-2xl font-black font-mono text-foreground">98%</span>
-                <span className="text-xs font-semibold text-muted-foreground">Clients satisfaits</span>
-              </div>
-              <div className="w-px h-10 bg-border" />
-              <div className="flex flex-col">
-                <span className="text-2xl font-black font-mono text-[#0E7A55]">0 FCFA</span>
-                <span className="text-xs font-semibold text-muted-foreground">Erreur d'arrondi TVA</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Right Column: Live Interactive Smartphone Mockup */}
-          <div className="flex-1 relative w-full max-w-md mt-6 lg:mt-0 flex justify-center">
-            {/* Toast Feedback */}
-            {paymentSentToast && (
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 bg-[#0E7A55] text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 animate-in slide-in-from-top duration-300">
-                <CheckCircle2 className="w-4 h-4" /> Lien Wave / OM copié & prêt à envoyer !
-              </div>
-            )}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] xl:text-[52px] font-black font-display tracking-tight text-foreground leading-[1.15]">
+                Facturez en Francs CFA, encaissez via{' '}
+                <span className="text-[#0055ff] inline-block hover:scale-105 transition-transform">Wave</span> &{' '}
+                <span className="text-[#ff7900] inline-block hover:scale-105 transition-transform">Orange Money</span>{' '}
+                en toute sérénité.
+              </h1>
 
-            {/* Smartphone Shell */}
-            <div className="relative w-full aspect-[9/16] max-w-[320px] bg-card rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-4 border-slate-800 dark:border-slate-700 overflow-hidden flex flex-col">
-              {/* Speaker / Camera Notch */}
-              <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-4 bg-slate-800 dark:bg-slate-700 rounded-full z-20" />
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                Conçu pour les entrepreneurs et PME à Dakar, Abidjan, Cotonou, Bamako, Lomé et Ouagadougou. Simplifiez votre gestion financière, gérez la TVA UEMOA (18%) et accélérez vos encaissements.
+              </p>
 
-              {/* App Header Inside Phone */}
-              <div className="pt-7 px-4 pb-3 border-b border-border flex justify-between items-center bg-muted/40">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF6B00]" />
-                  <span className="text-xs font-black font-mono">Facture #FAC-2026-089</span>
-                </div>
-                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
-                  UEMOA
+              {/* Feature Chips Badge Bar */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/60 border border-border text-xs font-semibold text-foreground">
+                  <BadgeCheck className="w-3.5 h-3.5 text-[#0E7A55]" /> TVA UEMOA 18%
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/60 border border-border text-xs font-semibold text-foreground">
+                  <Smartphone className="w-3.5 h-3.5 text-blue-600" /> Wave & Orange Money
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/60 border border-border text-xs font-semibold text-foreground">
+                  <Layers className="w-3.5 h-3.5 text-[#FF6B00]" /> Acomptes 30% / 70%
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-muted/60 border border-border text-xs font-semibold text-foreground">
+                  <MessageCircle className="w-3.5 h-3.5 text-emerald-600" /> Partage WhatsApp
                 </span>
               </div>
 
-              {/* App Body Inside Phone */}
-              <div className="p-4 flex-grow bg-background flex flex-col gap-3 text-xs">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Client Destinataire</p>
-                    <p className="font-bold text-foreground text-sm">Agence Digitale Dakar</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Total TTC</p>
-                    <p className="font-mono font-extrabold text-[#FF6B00] text-base">1 450 000 F</p>
-                  </div>
-                </div>
-
-                {/* Items Breakdown */}
-                <div className="bg-card rounded-xl border border-border p-3 shadow-2xs space-y-2">
-                  <div className="flex justify-between items-center py-1 border-b border-border/60">
-                    <span className="font-medium text-foreground">Refonte Site E-Commerce</span>
-                    <span className="font-mono font-bold">1 000 000</span>
-                  </div>
-                  <div className="flex justify-between items-center py-1">
-                    <span className="font-medium text-foreground">Maintenance Annuelle Cloud</span>
-                    <span className="font-mono font-bold">450 000</span>
-                  </div>
-                </div>
-
-                {/* Payment Channels Supported */}
-                <div className="bg-muted/30 p-2.5 rounded-xl border border-border space-y-1.5">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase block">Canaux d'encaissement</span>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 font-bold text-[10px]">Wave</span>
-                    <span className="px-2 py-0.5 rounded-md bg-orange-500/10 text-orange-600 font-bold text-[10px]">Orange Money</span>
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 font-bold text-[10px]">Virement</span>
-                  </div>
-                </div>
-
-                {/* Status Indicator */}
-                <div className="mt-auto">
-                  <div className="bg-orange-50 dark:bg-orange-950/40 rounded-xl p-2.5 flex justify-between items-center border border-orange-200 dark:border-orange-900/60">
-                    <span className="text-xs font-semibold text-orange-900 dark:text-orange-200">Statut Recouvrement</span>
-                    <span className="bg-[#ffe8cc] text-[#cc5500] px-2.5 py-0.5 rounded-full text-[10px] font-bold">
-                      Acompte 30% Reçu
-                    </span>
-                  </div>
-                </div>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                <Link
+                  href="/register"
+                  className="btn-shimmer text-white text-base font-bold px-8 py-4 rounded-xl shadow-lg shadow-orange-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 min-h-[52px] animate-pulse-glow"
+                >
+                  <span>Essayer Gratuitement</span>
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <a
+                  href="#demo"
+                  className="bg-card hover:bg-muted/80 text-foreground border border-border text-base font-bold px-7 py-4 rounded-xl shadow-2xs hover:scale-[1.02] transition-all flex items-center justify-center gap-2 min-h-[52px]"
+                >
+                  Voir le Tableau de Bord
+                </a>
               </div>
 
-              {/* Quick-Pay CTA in Phone */}
-              <div className="p-3 bg-muted/40 border-t border-border">
-                <button
-                  type="button"
-                  onClick={handleSimulatePaymentLink}
-                  className="w-full bg-[#FF6B00] hover:bg-[#ea580c] active:scale-95 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Envoyer le lien de paiement</span>
-                </button>
+              {/* Trust Proof Metrics */}
+              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border max-w-lg mx-auto lg:mx-0">
+                <div className="flex flex-col">
+                  <span className="text-2xl sm:text-3xl font-black font-mono text-foreground">10k+</span>
+                  <span className="text-xs font-semibold text-muted-foreground">Factures payées</span>
+                </div>
+                <div className="flex flex-col border-l border-border pl-4">
+                  <span className="text-2xl sm:text-3xl font-black font-mono text-foreground">98%</span>
+                  <span className="text-xs font-semibold text-muted-foreground">Clients satisfaits</span>
+                </div>
+                <div className="flex flex-col border-l border-border pl-4">
+                  <span className="text-2xl sm:text-3xl font-black font-mono text-[#0E7A55]">0 FCFA</span>
+                  <span className="text-xs font-semibold text-muted-foreground">Erreur de TVA</span>
+                </div>
               </div>
             </div>
 
-            {/* Floating WhatsApp Bubble */}
-            <div className="absolute -right-2 sm:-right-4 top-1/4 bg-card p-3.5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-border flex items-center gap-3 animate-float z-30">
-              <div className="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm">
-                <MessageCircle className="w-5 h-5 fill-current" />
+            {/* Right Column (5 cols on desktop - perfectly centered & framed) */}
+            <div className="lg:col-span-5 flex justify-center items-center relative w-full pt-4 lg:pt-0">
+              {/* Toast Feedback */}
+              {paymentSentToast && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-40 bg-[#0E7A55] text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-xl flex items-center gap-2 animate-in slide-in-from-top duration-300">
+                  <CheckCircle2 className="w-4 h-4" /> Lien Wave / OM copié & prêt à envoyer !
+                </div>
+              )}
+
+              {/* Decorative Background Frame */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-emerald-500/5 to-transparent rounded-[3rem] -rotate-1 scale-105 border border-border/40 pointer-events-none" />
+
+              {/* Smartphone Shell */}
+              <div className="relative w-full aspect-[9/16] max-w-[330px] bg-card rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.16)] border-4 border-slate-800 dark:border-slate-700 overflow-hidden flex flex-col z-20">
+                {/* Speaker / Camera Notch */}
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-4 bg-slate-800 dark:bg-slate-700 rounded-full z-30" />
+
+                {/* App Header Inside Phone */}
+                <div className="pt-7 px-4 pb-3 border-b border-border flex justify-between items-center bg-muted/40">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#FF6B00]" />
+                    <span className="text-xs font-black font-mono">Facture #FAC-2026-089</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+                    UEMOA
+                  </span>
+                </div>
+
+                {/* App Body Inside Phone */}
+                <div className="p-4 flex-grow bg-background flex flex-col gap-3 text-xs">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Client Destinataire</p>
+                      <p className="font-bold text-foreground text-sm">Agence Digitale Dakar</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Total TTC</p>
+                      <p className="font-mono font-extrabold text-[#FF6B00] text-base">1 450 000 F</p>
+                    </div>
+                  </div>
+
+                  {/* Items Breakdown */}
+                  <div className="bg-card rounded-xl border border-border p-3 shadow-2xs space-y-2">
+                    <div className="flex justify-between items-center py-1 border-b border-border/60">
+                      <span className="font-medium text-foreground">Refonte Site E-Commerce</span>
+                      <span className="font-mono font-bold">1 000 000</span>
+                    </div>
+                    <div className="flex justify-between items-center py-1">
+                      <span className="font-medium text-foreground">Maintenance Annuelle Cloud</span>
+                      <span className="font-mono font-bold">450 000</span>
+                    </div>
+                  </div>
+
+                  {/* Payment Channels Supported */}
+                  <div className="bg-muted/30 p-2.5 rounded-xl border border-border space-y-1.5">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase block">Canaux d'encaissement</span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 font-bold text-[10px]">Wave</span>
+                      <span className="px-2 py-0.5 rounded-md bg-orange-500/10 text-orange-600 font-bold text-[10px]">Orange Money</span>
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 font-bold text-[10px]">Virement</span>
+                    </div>
+                  </div>
+
+                  {/* Status Indicator */}
+                  <div className="mt-auto">
+                    <div className="bg-orange-50 dark:bg-orange-950/40 rounded-xl p-2.5 flex justify-between items-center border border-orange-200 dark:border-orange-900/60">
+                      <span className="text-xs font-semibold text-orange-900 dark:text-orange-200">Statut Recouvrement</span>
+                      <span className="bg-[#ffe8cc] text-[#cc5500] px-2.5 py-0.5 rounded-full text-[10px] font-bold">
+                        Acompte 30% Reçu
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick-Pay CTA in Phone */}
+                <div className="p-3 bg-muted/40 border-t border-border">
+                  <button
+                    type="button"
+                    onClick={handleSimulatePaymentLink}
+                    className="w-full bg-[#FF6B00] hover:bg-[#ea580c] active:scale-95 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Envoyer le lien de paiement</span>
+                  </button>
+                </div>
               </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground font-semibold">Partage en 1 clic</p>
-                <p className="text-xs font-extrabold text-foreground">WhatsApp Direct</p>
+
+              {/* Floating WhatsApp Bubble (Top Right) */}
+              <div className="absolute -right-2 sm:-right-4 top-12 bg-card p-3 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.14)] border border-border flex items-center gap-2.5 animate-float z-30">
+                <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm shrink-0">
+                  <MessageCircle className="w-4 h-4 fill-current" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground font-semibold">Partage en 1 clic</p>
+                  <p className="text-xs font-extrabold text-foreground">WhatsApp Direct</p>
+                </div>
+              </div>
+
+              {/* Floating Encaissement Pill (Bottom Left) */}
+              <div className="absolute -left-3 sm:-left-6 bottom-16 bg-card p-3 rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.14)] border border-border flex items-center gap-2.5 animate-float [animation-delay:2s] z-30">
+                <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold text-xs shrink-0">
+                  WV
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#0E7A55] font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Encaissé avec succès
+                  </p>
+                  <p className="text-xs font-black font-mono text-foreground">+435 000 FCFA</p>
+                </div>
               </div>
             </div>
           </div>
@@ -417,8 +435,8 @@ export default function LandingPage() {
         {/* ======================================================================= */}
         {/* 📊 SECTION TABLEAU DE BORD EN DIRECT & METRIQUES (#demo)                */}
         {/* ======================================================================= */}
-        <section id="demo" className="px-4 sm:px-8 lg:px-24 py-16 bg-[#ffffff] dark:bg-[#131922] border-y border-border relative z-10">
-          <div className="max-w-6xl mx-auto flex flex-col gap-10">
+        <section id="demo" className="px-4 sm:px-8 lg:px-12 xl:px-20 py-16 bg-[#ffffff] dark:bg-[#131922] border-y border-border relative z-10">
+          <div className="max-w-7xl mx-auto flex flex-col gap-10">
             <div className="text-center md:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/60 text-[#FF6B00] text-xs font-bold uppercase tracking-wider mb-2">
                 <LayoutDashboard className="w-3.5 h-3.5" /> Démonstration Interactive
@@ -611,8 +629,8 @@ export default function LandingPage() {
         {/* ======================================================================= */}
         {/* ⚡ SECTION FONCTIONNALITÉS CLÉS (#features)                             */}
         {/* ======================================================================= */}
-        <section id="features" className="px-4 sm:px-8 lg:px-24 py-20 bg-[#f8f9fa] dark:bg-[#0f141a]">
-          <div className="max-w-6xl mx-auto space-y-12">
+        <section id="features" className="px-4 sm:px-8 lg:px-12 xl:px-20 py-20 bg-[#f8f9fa] dark:bg-[#0f141a]">
+          <div className="max-w-7xl mx-auto space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-[#0E7A55] text-xs font-bold uppercase tracking-wider">
                 <Shield className="w-3.5 h-3.5" /> Avantages Exclusifs Afrique
@@ -698,8 +716,8 @@ export default function LandingPage() {
         {/* ======================================================================= */}
         {/* 🏷️ SECTION TARIFS SIMPLES & TRANSPARENTS (#pricing)                     */}
         {/* ======================================================================= */}
-        <section id="pricing" className="px-4 sm:px-8 lg:px-24 py-20 bg-[#ffffff] dark:bg-[#131922] border-t border-border">
-          <div className="max-w-5xl mx-auto space-y-12">
+        <section id="pricing" className="px-4 sm:px-8 lg:px-12 xl:px-20 py-20 bg-[#ffffff] dark:bg-[#131922] border-t border-border">
+          <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center max-w-2xl mx-auto space-y-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950 text-[#FF6B00] text-xs font-bold uppercase tracking-wider">
                 <CreditCard className="w-3.5 h-3.5" /> Tarifs Accessibles
@@ -841,7 +859,7 @@ export default function LandingPage() {
         {/* ======================================================================= */}
         {/* 🌟 FINAL CALL TO ACTION                                                 */}
         {/* ======================================================================= */}
-        <section className="px-4 sm:px-8 lg:px-24 py-16 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-emerald-500/10 border-t border-border text-center relative overflow-hidden">
+        <section className="px-4 sm:px-8 lg:px-12 xl:px-20 py-16 bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-emerald-500/10 border-t border-border text-center relative overflow-hidden">
           <div className="max-w-3xl mx-auto space-y-6 relative z-10">
             <h2 className="text-3xl sm:text-4xl font-black font-display text-foreground">
               Prêt à simplifier vos encaissements dès aujourd'hui ?
@@ -864,17 +882,11 @@ export default function LandingPage() {
       {/* ========================================================================= */}
       {/* 📄 FOOTER                                                                 */}
       {/* ========================================================================= */}
-      <footer className="bg-[#ffffff] dark:bg-[#131922] border-t border-border px-4 sm:px-8 lg:px-24 py-10 text-xs text-muted-foreground">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#FF6B00] via-[#FF8A00] to-[#0E7A55] flex items-center justify-center text-white font-black text-xs">
-              iZ
-            </div>
-            <span className="font-bold text-foreground">Izi Factures © 2026</span>
-            <span>• Conçu pour l'Afrique de l'Ouest (UEMOA & CEMAC)</span>
-          </div>
+      <footer className="bg-[#ffffff] dark:bg-[#131922] border-t border-border px-4 sm:px-8 lg:px-12 xl:px-20 py-10 text-xs text-muted-foreground">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <BrandLogo size="sm" href="/" />
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 font-medium">
             <a href="#features" className="hover:text-foreground transition-colors">
               Fonctionnalités
             </a>

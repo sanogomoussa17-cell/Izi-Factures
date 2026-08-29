@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { CheckCircle2, ShieldCheck, Zap, Globe2 } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/brand-logo';
 
 export default function AuthLayout({
   children,
@@ -13,19 +14,7 @@ export default function AuthLayout({
       <div className="lg:col-span-7 flex flex-col justify-between p-6 sm:p-12 md:p-16">
         {/* Brand Logo Header */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-[#0E7A55] text-white flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
-              IZ
-            </div>
-            <div>
-              <span className="font-extrabold text-xl tracking-tight text-foreground font-display">
-                Izi<span className="text-[#0E7A55]">Factures</span>
-              </span>
-              <span className="block text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
-                Afrique & UEMOA
-              </span>
-            </div>
-          </Link>
+          <BrandLogo size="md" href="/" />
           <div className="text-xs text-muted-foreground hidden sm:block">
             Facturation & Recouvrement Pro
           </div>

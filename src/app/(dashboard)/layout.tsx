@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 import { repository } from '@/core/adapters';
+import { BrandLogo } from '@/components/ui/brand-logo';
 
 export default function DashboardLayout({
   children,
@@ -124,17 +125,7 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-30 shadow-xs">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B00] via-[#FF8A00] to-[#0E7A55] flex items-center justify-center text-white font-black text-base shadow-sm">
-            iZ
-          </div>
-          <div>
-            <span className="font-display font-black text-lg text-[#FF6B00]">
-              Izi<span className="text-[#0E7A55]">Factures</span>
-            </span>
-            <span className="block text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Afrique Pro</span>
-          </div>
-        </div>
+        <BrandLogo size="sm" href="/dashboard" />
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="p-2 rounded-lg hover:bg-muted text-muted-foreground"
@@ -152,19 +143,7 @@ export default function DashboardLayout({
         <div className="space-y-6">
           {/* Logo & Brand */}
           <div className="flex items-center justify-between px-1">
-            <Link href="/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF6B00] via-[#FF8A00] to-[#0E7A55] flex items-center justify-center text-white font-black text-lg shadow-md shadow-orange-500/20">
-                iZ
-              </div>
-              <div>
-                <span className="font-display font-black text-xl tracking-tight text-[#FF6B00]">
-                  Izi<span className="text-[#0E7A55]">Factures</span>
-                </span>
-                <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Facturation UEMOA
-                </span>
-              </div>
-            </Link>
+            <BrandLogo size="md" href="/dashboard" />
           </div>
 
           {/* Quick Create CTA (Vibrant Orange Button) */}

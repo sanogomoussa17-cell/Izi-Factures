@@ -67,12 +67,21 @@ export const InvoicePreview = React.forwardRef<HTMLDivElement, InvoicePreviewPro
             )}
           </div>
 
-          {/* Logo Badge (Faithful to Screenshot 1 design) */}
+          {/* Logo Badge (Faithful to Official Brand design) */}
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-[#0E7A55] text-white flex items-center justify-center shadow-sm">
-              <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
-                <path d="M12 2a2 2 0 0 1 2 2v2.1a6.002 6.002 0 0 1 3.9 2.25l1.48-1.48a2 2 0 1 1 2.83 2.83l-1.48 1.48A6.002 6.002 0 0 1 22 15h-2.1a2 2 0 1 1-3.9 0H14a2 2 0 0 1-4 0h-2.1a2 2 0 1 1-3.9 0H2a6.002 6.002 0 0 1 1.27-3.82L1.79 9.7a2 2 0 1 1 2.83-2.83l1.48 1.48A6.002 6.002 0 0 1 10 6.1V4a2 2 0 0 1 2-2z"/>
-              </svg>
+            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-xs flex items-center justify-center bg-white border border-slate-200">
+              <img
+                src={organization.logoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCnutGX6vR0ugy7nbbNfbLAy-l5Fk_VgRmXVQ0kNinsbtIvjWjgM1YvQOD7-5WSOoyRGr63azA6c7PbmFx0ANuD-bsiVzSeb3UNINbbVLnUcW46MCCgLate2W3ydZf9WC_m_QRqd5mNGDqpN6mSYRAo8RcYS8w7yiAmuRd7kO2UL5TgZjH6GFpcXChafzk49bm7L6AOkQtNqeVpjGDvVtKvGBJQwlzmwUnKnH2D7wNhDvxzSRncKOY'}
+                alt={organization.name}
+                className="w-full h-full object-contain p-1"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  if (target.parentElement) {
+                    target.parentElement.innerHTML = `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF6B00] to-[#0E7A55] text-white font-black text-base flex items-center justify-center">iZ</div>`;
+                  }
+                }}
+              />
             </div>
             <div className="text-right hidden sm:block">
               <div className="font-bold text-sm text-slate-900">{organization.name}</div>
