@@ -127,13 +127,6 @@ function LoginFormContent() {
     }
   };
 
-  // Connexion rapide compte démo
-  const handleQuickDemoLogin = async () => {
-    setEmail('demo@izifactures.sn');
-    setPassword('IziFactures2026!');
-    await executeLogin('demo@izifactures.sn', 'IziFactures2026!');
-  };
-
   // --- Réinitialisation Mot de Passe ---
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -408,17 +401,6 @@ function LoginFormContent() {
           >
             Se Connecter <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
-
-          {/* Bouton Démo Rapide */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={handleQuickDemoLogin}
-              className="w-full text-xs py-2.5 px-3 bg-primary/5 border border-primary/20 rounded-lg text-[#FF6B00] font-semibold hover:bg-primary/10 transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
-            >
-              🚀 Connexion en 1 Clic (Compte Démo Entreprise)
-            </button>
-          </div>
         </form>
       ) : (
         /* ========================================================================= */
