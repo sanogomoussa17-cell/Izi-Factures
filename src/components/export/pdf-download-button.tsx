@@ -1,17 +1,26 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Download, Printer, Loader2 } from 'lucide-react';
+import { Printer, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Invoice, Organization, Client } from '@/core/domain/types';
 
 export interface PDFDownloadButtonProps {
-  invoiceNumber: string;
+  invoiceNumber?: string;
+  invoice?: Invoice;
+  organization?: Organization | null;
+  client?: Client | null;
   elementId?: string;
+  className?: string;
 }
 
 export const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   invoiceNumber,
+  invoice,
+  organization,
+  client,
   elementId = 'invoice-document-sheet',
+  className = 'text-xs',
 }) => {
   const [isPrinting, setIsPrinting] = useState(false);
 
@@ -30,7 +39,7 @@ export const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
       size="sm"
       onClick={handlePrint}
       disabled={isPrinting}
-      className="text-xs"
+      className={className}
     >
       {isPrinting ? (
         <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
