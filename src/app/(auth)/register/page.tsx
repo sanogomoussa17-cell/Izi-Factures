@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { repository } from '@/core/adapters';
 
 function RegisterFormContent() {
   const router = useRouter();
@@ -206,6 +207,11 @@ function RegisterFormContent() {
           };
           try {
             localStorage.setItem('izifactures_session', JSON.stringify(sessionData));
+            await repository.updateOrganization({
+              name: companyName.trim() || fullName.trim(),
+              legalName: fullName.trim(),
+              email: cleanEmail,
+            });
           } catch (e) {}
           window.location.href = '/dashboard';
           return;
@@ -227,6 +233,11 @@ function RegisterFormContent() {
             };
             try {
               localStorage.setItem('izifactures_session', JSON.stringify(sessionData));
+              await repository.updateOrganization({
+                name: companyName.trim() || fullName.trim(),
+                legalName: fullName.trim(),
+                email: cleanEmail,
+              });
             } catch (e) {}
             window.location.href = '/dashboard';
             return;

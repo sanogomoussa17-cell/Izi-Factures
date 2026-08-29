@@ -85,7 +85,7 @@ function LoginFormContent() {
           if (authError.message === 'Invalid login credentials') {
             setError('Identifiants incorrects (Email ou mot de passe invalide).');
           } else if (authError.message.toLowerCase().includes('email not confirmed')) {
-            setError('Veuillez confirmer votre adresse email en cliquant sur le lien reçu, ou connectez-vous avec le compte Démo.');
+            setError('Veuillez confirmer votre adresse email en cliquant sur le lien reçu pour vous connecter.');
           } else {
             setError(authError.message);
           }
