@@ -188,3 +188,29 @@ Lors de vos interventions sur cette codebase, veuillez respecter scrupuleusement
 5. **Déploiement & Serveur Local** :
    - Pour lancer le serveur de développement : `npm run dev` (sur le port 3000).
    - Pour tester le moteur de calcul : `node test_domain.js`.
+
+---
+
+## 🚀 7. Règle Obligatoire & Automatisée : Synchronisation & Push GitHub
+
+> **Règle absolue :** À chaque fois que l'utilisateur demande de « pousser », « mettre à jour », « synchroniser » ou « envoyer » le code sur GitHub (ex: *« pousse sur github »*, *« mets le code sur github »*, *« sauvegarde »*), l'agent **DOIT EXÉCUTER LE PUSH LUI-MÊME DE MANIÈRE 100% AUTONOME, SÉCURISÉE ET IMMÉDIATE**.
+
+### 🔒 Protocole d'Exécution Strict & Automatique :
+1. **Initialisation de l'environnement Git** :
+   - Toujours inclure Git dans le PATH : `$env:PATH = "$env:LOCALAPPDATA\Programs\Git\cmd;" + $env:PATH`
+2. **Contrôle Sécurité & Anti-Fuite de Secrets** :
+   - Vérifier que `.gitignore` protège strictement `.env*`, `.agents*`, `node_modules/`, `.next/`, et les clés secrètes (`sb_secret_*`).
+   - Ne jamais commiter de jetons d'accès ou clés d'API sensibles en clair.
+3. **Commit & Push Autonome** :
+   - Exécuter automatiquement :
+     ```powershell
+     $env:PATH = "$env:LOCALAPPDATA\Programs\Git\cmd;" + $env:PATH
+     git add .
+     git commit -m "feat/fix: <description claire des changements>"
+     git push origin main
+     ```
+   - Ne **JAMAIS** demander à l'utilisateur de taper lui-même les commandes ou de faire des manipulations manuelles superflues si l'agent peut l'exécuter directement.
+4. **Validation & Confirmation Visuelle** :
+   - Confirmer le succès à l'utilisateur avec le lien direct vers le dépôt :
+     👉 **`https://github.com/sanogomoussa17-cell/Izi-Factures`**
+   - Fournir un récapitulatif clair et structuré des modifications poussées.
