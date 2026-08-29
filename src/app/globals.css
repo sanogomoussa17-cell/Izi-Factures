@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 98%; /* Fond blanc éclatant chaleureux #FAFAF8 */
+    --foreground: 222 47% 11%; /* #0F172A */
+    
+    --card: 0 0% 100%; /* Blanc pur #FFFFFF */
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    /* ORANGE PRIMAIRE (#FF6B00 / #F97316) */
+    --primary: 24 95% 50%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* VERT SECONDAIRE (#0E7A55) */
+    --secondary: 160 84% 26%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 16% 47%;
+    
+    --accent: 24 100% 96%;
+    --accent-foreground: 24 95% 45%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 89%;
+    --input: 214 20% 86%;
+    --ring: 24 95% 50%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 20% 98%;
+    
+    --card: 222 40% 11%;
+    --card-foreground: 210 20% 98%;
+    
+    --popover: 222 40% 11%;
+    --popover-foreground: 210 20% 98%;
+    
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 160 84% 32%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 222 30% 16%;
+    --muted-foreground: 215 20% 65%;
+    
+    --accent: 24 50% 18%;
+    --accent-foreground: 24 95% 60%;
+    
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 222 30% 18%;
+    --input: 222 30% 22%;
+    --ring: 24 95% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Document Paper Visual Styles */
+.invoice-sheet {
+  background: #ffffff;
+  box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.invoice-sheet:hover {
+  box-shadow: 0 8px 30px -2px rgba(0, 0, 0, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.06);
+}
+
+/* Print CSS */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  aside, header, button, nav, .no-print {
+    display: none !important;
+  }
+  .invoice-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
