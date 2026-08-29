@@ -39,8 +39,31 @@ import { Button } from '@/components/ui/button';
 export default function DashboardPage() {
   const [allInvoices, setAllInvoices] = useState<Invoice[]>([]);
   const [org, setOrg] = useState<Organization | null>(null);
-  const [userFullName, setUserFullName] = useState<string>('');
-  const [userCompanyName, setUserCompanyName] = useState<string>('');
+  const [userFullName, setUserFullName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('izifactures_session');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return parsed.name || 'SANOGO MOUSSA';
+        }
+      } catch (e) {}
+    }
+    return 'SANOGO MOUSSA';
+  });
+
+  const [userCompanyName, setUserCompanyName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('izifactures_session');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return parsed.companyName || 'RIPA BOUTIQUE';
+        }
+      } catch (e) {}
+    }
+    return 'RIPA BOUTIQUE';
+  });
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState<Invoice | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState<Invoice | null>(null);

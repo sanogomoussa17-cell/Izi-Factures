@@ -33,9 +33,33 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string>('');
-  const [companyName, setCompanyName] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('izifactures_session');
+        if (stored) return JSON.parse(stored).email || null;
+      } catch (e) {}
+    }
+    return null;
+  });
+  const [userName, setUserName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('izifactures_session');
+        if (stored) return JSON.parse(stored).name || 'SANOGO MOUSSA';
+      } catch (e) {}
+    }
+    return 'SANOGO MOUSSA';
+  });
+  const [companyName, setCompanyName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('izifactures_session');
+        if (stored) return JSON.parse(stored).companyName || 'RIPA BOUTIQUE';
+      } catch (e) {}
+    }
+    return 'RIPA BOUTIQUE';
+  });
 
   useEffect(() => {
     async function checkUserAndOrg() {
