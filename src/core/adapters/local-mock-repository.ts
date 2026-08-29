@@ -383,6 +383,48 @@ export class LocalMockRepository implements IInvoiceRepository {
     return { payment: newPayment, updatedInvoice };
   }
 
+  async updatePayment(params: {
+    paymentId: string;
+    invoiceId: string;
+    amount?: number;
+    paymentMethod?: PaymentRecord['paymentMethod'];
+    transactionReference?: string;
+    paymentDate?: string;
+    notes?: string;
+  }): Promise<{ payment: PaymentRecord; updatedInvoice: Invoice }> {
+    const invoice = await this.getInvoiceById(params.invoiceId);
+    if (!invoice) throw new Error('Facture introuvable');
+
+    const targetPayment = (invoice.payments || []).find((p) => p.id === params.paymentId);
+    if (!targetPayment) throw new Error('Paiement introuvable');
+
+    const updatedPayment: PaymentRecord = {
+      ...targetPayment,
+      amount: params.amount !== undefined ? params.amount : targetPayment.amount,
+      paymentMethod: params.paymentMethod || targetPayment.paymentMethod,
+      transactionReference: params.transactionReference || targetPayment.transactionReference,
+      paymentDate: params.paymentDate || targetPayment.paymentDate,
+      notes: params.notes !== undefined ? params.notes : targetPayment.notes,
+    };
+
+    const newPayments = (invoice.payments || []).map((p) => (p.id === params.paymentId ? updatedPayment : p));
+    const totalPaid = newPayments.reduce((sum, p) => sum + p.amount, 0);
+    const remaining = Math.max(0, invoice.totalAmount - totalPaid);
+
+    let paymentStatus: Invoice['paymentStatus'] = 'PARTIALLY_PAID';
+    if (remaining === 0) paymentStatus = 'PAID';
+    else if (totalPaid === 0) paymentStatus = 'UNPAID';
+
+    const updatedInvoice = await this.updateInvoice(invoice.id, {
+      paidAmount: totalPaid,
+      remainingBalance: remaining,
+      paymentStatus,
+      payments: newPayments,
+    });
+
+    return { payment: updatedPayment, updatedInvoice };
+  }
+
   private async refreshClientStats(clientId: string): Promise<void> {
     const invoices = await this.getInvoices({ clientId });
     let totalInvoiced = 0;

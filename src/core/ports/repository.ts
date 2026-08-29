@@ -49,6 +49,16 @@ export interface IInvoiceRepository {
     notes?: string;
   }): Promise<{ payment: PaymentRecord; updatedInvoice: Invoice }>;
 
+  updatePayment(params: {
+    paymentId: string;
+    invoiceId: string;
+    amount?: number;
+    paymentMethod?: PaymentRecord['paymentMethod'];
+    transactionReference?: string;
+    paymentDate?: string;
+    notes?: string;
+  }): Promise<{ payment: PaymentRecord; updatedInvoice: Invoice }>;
+
   // Dashboard & Métriques
   getDashboardMetrics(): Promise<DashboardMetrics>;
 }

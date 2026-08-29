@@ -508,12 +508,33 @@ export const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
           <div className="space-y-2 pt-2">
             {(invoice.schedules || []).map((s, sIdx) => (
-              <div key={s.id || sIdx} className="flex items-center justify-between bg-card p-3 rounded-xl border border-border text-xs">
-                <span className="font-bold text-foreground">{s.label}</span>
-                <span className="text-muted-foreground font-mono">Échéance : {s.dueDate}</span>
-                <span className="font-extrabold font-mono text-[#0E7A55]">
-                  {formatMoney(s.expectedAmount, invoice.currency || 'XOF')} ({s.percentage}%)
-                </span>
+              <div key={s.id || sIdx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-card p-3 rounded-xl border border-border text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-foreground">{s.label}</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted font-mono">{s.percentage}%</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] text-muted-foreground font-semibold">Date d'échéance :</span>
+                    <input
+                      type="date"
+                      value={s.dueDate || ''}
+                      onChange={(e) => {
+                        const updatedSchedules = (invoice.schedules || []).map((sc, idx) => {
+                          if (idx === sIdx) {
+                            return { ...sc, dueDate: e.target.value };
+                          }
+                          return sc;
+                        });
+                        onChange({ ...invoice, schedules: updatedSchedules });
+                      }}
+                      className="h-8 rounded-lg border border-input bg-card px-2 py-1 text-xs text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-[#FF6B00]"
+                    />
+                  </div>
+                  <span className="font-extrabold font-mono text-[#0E7A55] shrink-0">
+                    {formatMoney(s.expectedAmount, invoice.currency || 'XOF')}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

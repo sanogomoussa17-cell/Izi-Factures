@@ -18,6 +18,7 @@ import {
   FileText,
   CreditCard,
   Edit3,
+  Pencil,
   Ban,
   Trash2,
 } from 'lucide-react';
@@ -28,6 +29,7 @@ import { InvoicePreview } from '@/components/invoice-editor/invoice-preview';
 import { PDFDownloadButton } from '@/components/export/pdf-download-button';
 import { WhatsAppShareButton } from '@/components/export/whatsapp-share-button';
 import { RecordPaymentModal } from '@/components/payments/record-payment-modal';
+import { EditPaymentModal } from '@/components/payments/edit-payment-modal';
 import { CancelInvoiceModal } from '@/components/invoices/cancel-invoice-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,6 +43,8 @@ export default function InvoiceDetailPage() {
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedPaymentToEdit, setSelectedPaymentToEdit] = useState<PaymentRecord | null>(null);
+  const [isEditPaymentModalOpen, setIsEditPaymentModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -348,19 +352,35 @@ export default function InvoiceDetailPage() {
                 {(invoice.payments || []).map((pay) => (
                   <div
                     key={pay.id}
-                    className="p-3 bg-muted/40 rounded-xl border border-border text-xs space-y-1"
+                    className="p-3.5 bg-muted/40 rounded-xl border border-border text-xs space-y-2 group hover:border-orange-500/40 transition-all shadow-2xs"
                   >
                     <div className="flex items-center justify-between font-bold">
-                      <span className="text-foreground">
+                      <span className="text-foreground flex items-center gap-1.5">
+                        <Smartphone className="w-3.5 h-3.5 text-[#0E7A55]" />
                         {pay.paymentMethod.toUpperCase()} • Ref: {pay.transactionReference}
                       </span>
-                      <span className="text-[#0E7A55] font-mono">
+                      <span className="text-[#0E7A55] font-mono font-black text-sm">
                         +{formatMoney(pay.amount, invoice.currency)}
                       </span>
                     </div>
-                    <div className="text-[11px] text-muted-foreground flex justify-between">
-                      <span>Reçu le {pay.paymentDate}</span>
-                      {pay.notes && <span>{pay.notes}</span>}
+                    <div className="text-[11px] text-muted-foreground flex items-center justify-between pt-1 border-t border-border/50">
+                      <span className="flex items-center gap-1 font-medium text-foreground">
+                        <Calendar className="w-3.5 h-3.5 text-[#FF6B00]" /> Reçu le <strong>{pay.paymentDate}</strong>
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {pay.notes && <span className="italic truncate max-w-[120px]">{pay.notes}</span>}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedPaymentToEdit(pay);
+                            setIsEditPaymentModalOpen(true);
+                          }}
+                          className="text-[11px] text-[#FF6B00] hover:text-[#EA580C] font-bold flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-orange-950/60 border border-orange-200 dark:border-orange-900/60 shadow-2xs transition-colors"
+                          title="Modifier la date ou les détails de ce règlement"
+                        >
+                          <Pencil className="w-3 h-3" /> Modifier Date / Infos
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -385,6 +405,21 @@ export default function InvoiceDetailPage() {
         onClose={() => setIsPaymentModalOpen(false)}
         invoice={invoice}
         onPaymentSuccess={() => loadData()}
+      />
+
+      {/* Edit Payment Modal (Date, Montant, Réf, Notes) */}
+      <EditPaymentModal
+        isOpen={isEditPaymentModalOpen}
+        onClose={() => {
+          setIsEditPaymentModalOpen(false);
+          setSelectedPaymentToEdit(null);
+        }}
+        invoice={invoice}
+        payment={selectedPaymentToEdit}
+        onPaymentUpdated={(updated) => {
+          setInvoice(updated);
+          loadData();
+        }}
       />
 
       {/* Cancel Invoice Modal */}

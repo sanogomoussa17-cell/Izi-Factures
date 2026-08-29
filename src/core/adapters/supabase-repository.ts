@@ -839,6 +839,75 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
     }
   }
 
+  async updatePayment(params: {
+    paymentId: string;
+    invoiceId: string;
+    amount?: number;
+    paymentMethod?: PaymentRecord['paymentMethod'];
+    transactionReference?: string;
+    paymentDate?: string;
+    notes?: string;
+  }): Promise<{ payment: PaymentRecord; updatedInvoice: Invoice }> {
+    try {
+      await localRepository.updatePayment(params);
+    } catch (e) {}
+
+    if (this.useMockFallback()) return localRepository.updatePayment(params);
+
+    try {
+      const payload: any = {};
+      if (params.amount !== undefined) payload.amount = params.amount;
+      if (params.paymentMethod) payload.payment_method = params.paymentMethod;
+      if (params.transactionReference) payload.transaction_reference = params.transactionReference;
+      if (params.paymentDate) payload.payment_date = params.paymentDate;
+      if (params.notes !== undefined) payload.notes = params.notes;
+
+      await supabase!.from('payments').update(payload).eq('id', params.paymentId);
+
+      // Recalculer le total payé de la facture depuis les paiements
+      const { data: allInvoicePayments } = await supabase!
+        .from('payments')
+        .select('amount')
+        .eq('invoice_id', params.invoiceId);
+
+      const totalPaid = (allInvoicePayments || []).reduce((sum, p) => sum + (p.amount || 0), 0);
+      const currentInvoice = await this.getInvoiceById(params.invoiceId);
+      if (currentInvoice) {
+        const remaining = Math.max(0, currentInvoice.totalAmount - totalPaid);
+        const paymentStatus = remaining === 0 ? 'PAID' : totalPaid > 0 ? 'PARTIALLY_PAID' : 'UNPAID';
+
+        await supabase!
+          .from('invoices')
+          .update({
+            paid_amount: totalPaid,
+            remaining_balance: remaining,
+            payment_status: paymentStatus,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', params.invoiceId);
+
+        await this.refreshClientStats(currentInvoice.clientId);
+      }
+
+      const updatedInv = (await this.getInvoiceById(params.invoiceId))!;
+      const updatedPayment = (updatedInv.payments || []).find((p) => p.id === params.paymentId) || {
+        id: params.paymentId,
+        invoiceId: params.invoiceId,
+        amount: params.amount || 0,
+        paymentMethod: params.paymentMethod || 'WAVE',
+        transactionReference: params.transactionReference || '',
+        paymentDate: params.paymentDate || new Date().toISOString().slice(0, 10),
+        notes: params.notes,
+        createdAt: new Date().toISOString(),
+      };
+
+      return { payment: updatedPayment, updatedInvoice: updatedInv };
+    } catch (err: any) {
+      console.warn('Exception updatePayment Supabase:', err?.message);
+      return localRepository.updatePayment(params);
+    }
+  }
+
   // --- Dashboard & Métriques en temps réel ---
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     if (this.useMockFallback()) return localRepository.getDashboardMetrics();

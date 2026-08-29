@@ -163,13 +163,21 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           required
         />
 
-        <Input
-          type="date"
-          label="Date de Valeur / Réception"
-          value={paymentDate}
-          onChange={(e) => setPaymentDate(e.target.value)}
-          required
-        />
+        <div className="p-3 bg-muted/30 border border-border rounded-xl space-y-1.5">
+          <label className="block text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
+            <Smartphone className="w-3.5 h-3.5 text-[#FF6B00]" /> Date Effective du Règlement *
+          </label>
+          <Input
+            type="date"
+            value={paymentDate}
+            onChange={(e) => setPaymentDate(e.target.value)}
+            required
+            className="rounded-lg bg-card"
+          />
+          <p className="text-[11px] text-muted-foreground">
+            Date à laquelle les fonds ont été encaissés.
+          </p>
+        </div>
 
         <Input
           label="Notes ou Remarques internes"
