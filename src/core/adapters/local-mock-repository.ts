@@ -32,7 +32,27 @@ export class LocalMockRepository implements IInvoiceRepository {
     if (!this.isBrowser()) return defaultValue;
     try {
       const data = localStorage.getItem(key);
-      return data ? JSON.parse(data) : defaultValue;
+      if (!data) return defaultValue;
+      const parsed = JSON.parse(data);
+
+      // Filtrer les anciennes fausses données d'exemples
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed.filter((item: any) => {
+          const id = item?.id || '';
+          const name = item?.name || '';
+          const company = item?.companyName || '';
+          const isMockId = ['inv_01', 'inv_02', 'inv_03', 'cli_01', 'cli_02', 'cli_03', 'sup_01', 'sup_02'].includes(id);
+          const isMockName = ['BillCraft Africa', 'Angelina Caroline', 'Cansaas Agency', 'Mamadou Diallo', 'Sahel Logistique SARL', 'Koffi Mensah', 'Bénin Fintech Solutions', 'Cloud Hosting Africa', 'Papeterie & Fournitures Sahel'].includes(name) || ['Cansaas Agency', 'Sahel Logistique SARL', 'Bénin Fintech Solutions', 'Cloud Africa SAS', 'Papeterie Sahel SA'].includes(company);
+          return !isMockId && !isMockName;
+        });
+        return cleaned as unknown as T;
+      }
+
+      if (parsed && typeof parsed === 'object' && (parsed as any).name === 'BillCraft Africa & Studio') {
+        return defaultValue;
+      }
+
+      return parsed;
     } catch {
       return defaultValue;
     }
