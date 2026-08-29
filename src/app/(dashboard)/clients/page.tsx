@@ -71,6 +71,20 @@ export default function ClientsPage() {
 
   useEffect(() => {
     loadData();
+
+    const handleFocusOrVisible = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        loadData();
+      }
+    };
+
+    window.addEventListener('focus', handleFocusOrVisible);
+    window.addEventListener('visibilitychange', handleFocusOrVisible);
+
+    return () => {
+      window.removeEventListener('focus', handleFocusOrVisible);
+      window.removeEventListener('visibilitychange', handleFocusOrVisible);
+    };
   }, [searchQuery]);
 
   const handleCreateClient = async (e: React.FormEvent) => {

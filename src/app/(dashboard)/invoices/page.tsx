@@ -60,6 +60,20 @@ export default function InvoicesListPage() {
 
   useEffect(() => {
     loadInvoices();
+
+    const handleFocusOrVisible = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        loadInvoices();
+      }
+    };
+
+    window.addEventListener('focus', handleFocusOrVisible);
+    window.addEventListener('visibilitychange', handleFocusOrVisible);
+
+    return () => {
+      window.removeEventListener('focus', handleFocusOrVisible);
+      window.removeEventListener('visibilitychange', handleFocusOrVisible);
+    };
   }, []);
 
   // Filtrage côté client pour réactivité instantanée et comptage des onglets

@@ -130,6 +130,16 @@ export default function DashboardPage() {
   useEffect(() => {
     loadData();
 
+    const handleFocusOrVisible = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        loadData();
+      }
+    };
+
+    window.addEventListener('focus', handleFocusOrVisible);
+    window.addEventListener('visibilitychange', handleFocusOrVisible);
+
+    let unsubscribeAuth: (() => void) | undefined;
     if (isSupabaseConfigured && supabase) {
       const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
@@ -151,10 +161,16 @@ export default function DashboardPage() {
           } catch (e) {}
         }
       });
-      return () => {
+      unsubscribeAuth = () => {
         authListener?.subscription?.unsubscribe();
       };
     }
+
+    return () => {
+      window.removeEventListener('focus', handleFocusOrVisible);
+      window.removeEventListener('visibilitychange', handleFocusOrVisible);
+      if (unsubscribeAuth) unsubscribeAuth();
+    };
   }, []);
 
   // --- Calcul des Métriques Filtrées en Temps Réel selon la Plage de Dates ---

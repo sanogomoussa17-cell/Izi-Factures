@@ -258,4 +258,23 @@ Lors de vos interventions sur cette codebase, veuillez respecter scrupuleusement
 > 2. **Seules les informations et données saisies par un compte spécifique doivent figurer dans ce compte uniquement**. Aucune facture, aucun client, aucun fournisseur ou paiement d'un autre compte ne doit être accessible, visible ou fusionné.
 > 3. Cette règle est **obligatoire et permanente** pour tous les comptes créés et tous ceux qui seront créés.
 
+---
+
+## 🔄 11. Règle Obligatoire & Absolue : Synchronisation Instantanée des Données pour Identifiants Identiques (Cloud Realtime & Shared State)
+
+> **Règle absolue :** Quand une ou plusieurs personnes (ou différents navigateurs/appareils) utilisent des **informations de connexion identiques (même compte / même organisation)**, elles doivent **OBLIGATOIREMENT avoir les mêmes informations exactes en temps réel**.
+> 
+> **Toute donnée enregistrée, modifiée ou supprimée par l'une d'entre elles (chiffres d'affaires, factures, encaissements Wave/Orange Money, clients, fournisseurs, soldes) DOIT ÊTRE AUTOMATIQUEMENT ET IMMÉDIATEMENT VISIBLE PAR TOUTES LES AUTRES.**
+
+### 🔒 Directives Strictes de Synchronisation :
+1. **Source Unique de Vérité Cloud PostgreSQL** :
+   - Tous les accès utilisant les mêmes identifiants partagent le même `org_id` et la même base de données Supabase PostgreSQL.
+   - Les listes et métriques affichées sont toujours issues de l'état centralisé à jour.
+2. **Synchronisation Transversale Totale** :
+   - Toute nouvelle facture, tout encaissement partiel ou total et tout nouvel article enregistré par un utilisateur est immédiatement visible par l'ensemble des collaborateurs utilisant ce compte.
+3. **Rafraîchissement Automatique en Direct** :
+   - Les vues clés (Dashboard, Factures, Clients, Fournisseurs) intègrent des écouteurs de reprise de focus et de visibilité (`focus` / `visibilitychange`) assurant la réactualisation continue sans manipulation manuelle.
+4. **Portée Universelle Obligatoire** :
+   - Cette règle est **permanente et obligatoire** pour tous les comptes existants et futurs.
+
 
