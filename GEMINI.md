@@ -233,3 +233,19 @@ Lors de vos interventions sur cette codebase, veuillez respecter scrupuleusement
 4. **Calculs & Métriques 100% Réels** :
    - Les indicateurs financiers (Total facturé, Total encaissé, Taux de recouvrement, Factures en retard) doivent être calculés exclusivement sur les factures réelles émises par l'utilisateur. Si aucune facture n'existe, les métriques doivent afficher `0 FCFA` (0%).
 
+---
+
+## 👤 9. Règle Obligatoire & Absolue : Accueil & Bannière Personnalisés (Nom & Entreprise Réels)
+
+> **Règle absolue :** Pour tout compte existant ou nouvellement créé (à l'inscription ou à la connexion), le message d'accueil du Tableau de bord **DOIT OBLIGATOIREMENT UTILISER LE VÉRITABLE NOM ET PRÉNOM RENSEIGNÉ PAR L'UTILISATEUR AINSI QUE LE NOM EXACT DE SON ENTREPRISE**.
+
+### 🔒 Directives Strictes de Personnalisation :
+1. **Message de Bienvenue Nominal** :
+   - Titre principal : `Bienvenue, {full_name} 👋` (ex: `Bienvenue, SANOGO MOUSSA 👋`).
+2. **Badge & Espace Entreprise Dédié** :
+   - Badge supérieur : `Espace Facturation — {company_name}` (ex: `Espace Facturation — RIPA BOUTIQUE`).
+   - Paragraphe d'accueil : `Votre espace de pilotage pour {company_name} est prêt. Suivez vos créances en temps réel, encaissez vos paiements via Wave & Orange Money et émettez des factures fiscales conformes UEMOA (TVA 18%).`
+3. **Synchronisation Automatique à l'Inscription** :
+   - Dès qu'un utilisateur s'inscrit (`/register`), son `full_name` et `company_name` sont stockés dans `user_metadata` Supabase, dans l'organisation associée et dans la session de navigation pour une application instantanée dès la première seconde de connexion.
+
+
