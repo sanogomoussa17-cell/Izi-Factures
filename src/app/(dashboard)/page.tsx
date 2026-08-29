@@ -93,7 +93,7 @@ export default function DashboardPage() {
 
       // 3. Fallback Organisation
       if (!resolvedCompany && orgData?.name) resolvedCompany = orgData.name;
-      if (!resolvedName && orgData?.name) resolvedName = orgData.name;
+      if (!resolvedName && orgData?.legalName) resolvedName = orgData.legalName;
 
       if (resolvedName) setUserFullName(resolvedName);
       if (resolvedCompany) setUserCompanyName(resolvedCompany);
@@ -106,6 +106,19 @@ export default function DashboardPage() {
 
   useEffect(() => {
     loadData();
+
+    if (isSupabaseConfigured && supabase) {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        if (session?.user) {
+          const meta = session.user.user_metadata || {};
+          if (meta.full_name) setUserFullName(meta.full_name);
+          if (meta.company_name) setUserCompanyName(meta.company_name);
+        }
+      });
+      return () => {
+        authListener?.subscription?.unsubscribe();
+      };
+    }
   }, []);
 
   // --- Calcul des Métriques Filtrées en Temps Réel selon la Plage de Dates ---
@@ -154,7 +167,7 @@ export default function DashboardPage() {
 
     const collectionRate = totalRevenue > 0 ? Math.round((totalCollected / totalRevenue) * 100) : 0;
 
-    // Calcul du graphique mensuel sur les 6 derniers mois
+    // Tendances mensuelles des 6 derniers mois
     const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     const currentDate = new Date();
     const monthlyRevenueChart: { month: string; invoiced: number; collected: number }[] = [];
@@ -169,9 +182,24 @@ export default function DashboardPage() {
       let monthCollected = 0;
 
       for (const inv of invoices) {
+        if (inv.status === 'CANCELLED') continue;
         const invDate = new Date(inv.issueDate);
         if (invDate.getFullYear() === mYear && invDate.getMonth() === mMonth) {
-          if (inv.status !== 'CANCELLED') monthInvoiced += inv.totalAmount;
+          monthInvoiced += inv.totalAmount;
+        }
+      }
+
+      for (const pay of allPayments) {
+        const payDate = new Date(pay.paymentDate);
+        if (payDate.getFullYear() === mYear && payDate.getMonth() === mMonth) {
+          monthCollected += pay.amount;
+        }
+      }
+
+      for (const inv of invoices) {
+        if (inv.status === 'CANCELLED') continue;
+        const invDate = new Date(inv.issueDate);
+        if (invDate.getFullYear() === mYear && invDate.getMonth() === mMonth && (!inv.payments || inv.payments.length === 0)) {
           monthCollected += inv.paidAmount;
         }
       }
@@ -240,8 +268,8 @@ export default function DashboardPage() {
     );
   }
 
-  const greetingName = userFullName || userCompanyName || org?.name || 'Entrepreneur';
-  const shopName = userCompanyName || org?.name || 'Votre Entreprise';
+  const greetingName = userFullName || 'SANOGO MOUSSA';
+  const shopName = userCompanyName || org?.name || 'RIPA BOUTIQUE';
   const currency = org?.currency || 'XOF';
 
   return (

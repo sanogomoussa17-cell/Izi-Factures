@@ -74,11 +74,24 @@ export default function DashboardLayout({
         const org = await repository.getOrganization();
         if (org?.name) {
           setCompanyName((prev) => prev || org.name);
-          setUserName((prev) => prev || org.name);
         }
       } catch (e) {}
     }
     checkUserAndOrg();
+
+    if (isSupabaseConfigured && supabase) {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        if (session?.user) {
+          const meta = session.user.user_metadata || {};
+          if (meta.full_name) setUserName(meta.full_name);
+          if (meta.company_name) setCompanyName(meta.company_name);
+          setUserEmail(session.user.email || null);
+        }
+      });
+      return () => {
+        authListener?.subscription?.unsubscribe();
+      };
+    }
   }, []);
 
   const handleSignOut = async () => {
@@ -104,8 +117,8 @@ export default function DashboardLayout({
     { name: 'Aide & Support', href: '/help', icon: HelpCircle },
   ];
 
-  const displayName = userName || companyName || userEmail || 'Izi Factures Studio';
-  const displayCompany = companyName || 'Dakar, Sénégal (XOF)';
+  const displayName = userName || 'SANOGO MOUSSA';
+  const displayCompany = companyName || 'RIPA BOUTIQUE';
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
