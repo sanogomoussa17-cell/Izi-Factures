@@ -45,11 +45,11 @@ export default function DashboardPage() {
         const stored = localStorage.getItem('izifactures_session');
         if (stored) {
           const parsed = JSON.parse(stored);
-          return parsed.name || 'SANOGO MOUSSA';
+          return parsed.name || '';
         }
       } catch (e) {}
     }
-    return 'SANOGO MOUSSA';
+    return '';
   });
 
   const [userCompanyName, setUserCompanyName] = useState<string>(() => {
@@ -58,11 +58,11 @@ export default function DashboardPage() {
         const stored = localStorage.getItem('izifactures_session');
         if (stored) {
           const parsed = JSON.parse(stored);
-          return parsed.companyName || 'RIPA BOUTIQUE';
+          return parsed.companyName || '';
         }
       } catch (e) {}
     }
-    return 'RIPA BOUTIQUE';
+    return '';
   });
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState<Invoice | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -304,8 +304,8 @@ export default function DashboardPage() {
     );
   }
 
-  const greetingName = userFullName || 'SANOGO MOUSSA';
-  const shopName = userCompanyName || org?.name || 'RIPA BOUTIQUE';
+  const greetingName = userFullName || org?.legalName || 'Entrepreneur';
+  const shopName = userCompanyName || org?.name || 'Mon Entreprise';
   const currency = org?.currency || 'XOF';
 
   return (

@@ -46,19 +46,19 @@ export default function DashboardLayout({
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('izifactures_session');
-        if (stored) return JSON.parse(stored).name || 'SANOGO MOUSSA';
+        if (stored) return JSON.parse(stored).name || '';
       } catch (e) {}
     }
-    return 'SANOGO MOUSSA';
+    return '';
   });
   const [companyName, setCompanyName] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('izifactures_session');
-        if (stored) return JSON.parse(stored).companyName || 'RIPA BOUTIQUE';
+        if (stored) return JSON.parse(stored).companyName || '';
       } catch (e) {}
     }
-    return 'RIPA BOUTIQUE';
+    return '';
   });
 
   useEffect(() => {
@@ -155,8 +155,8 @@ export default function DashboardLayout({
     { name: 'Aide & Support', href: '/help', icon: HelpCircle },
   ];
 
-  const displayName = userName || 'SANOGO MOUSSA';
-  const displayCompany = companyName || 'RIPA BOUTIQUE';
+  const displayName = userName || 'Mon Compte';
+  const displayCompany = companyName || 'Mon Entreprise';
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
