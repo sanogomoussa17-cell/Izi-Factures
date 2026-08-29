@@ -230,7 +230,7 @@ export default function DashboardLayout({
         <header className="h-16 border-b border-border bg-card/90 backdrop-blur-md px-6 sm:px-10 lg:px-12 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
           <div className="flex items-center gap-4">
             <h2 className="text-base sm:text-lg font-bold text-foreground font-display">
-              {pathname === '/' && 'Tableau de Bord & Trésorerie'}
+              {(pathname === '/dashboard' || pathname === '/') && 'Tableau de Bord & Trésorerie'}
               {pathname === '/invoices' && 'Gestion des Factures'}
               {pathname === '/invoices/new' && 'Studio de Création de Facture'}
               {pathname.startsWith('/invoices/') && pathname !== '/invoices/new' && 'Détail de la Facture'}
