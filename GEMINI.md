@@ -235,17 +235,27 @@ Lors de vos interventions sur cette codebase, veuillez respecter scrupuleusement
 
 ---
 
-## 👤 9. Règle Obligatoire & Absolue : Accueil & Bannière Personnalisés (Nom & Entreprise Réels)
+## 👤 9. Règle Obligatoire & Absolue : Accueil & Bannière Personnalisés (Strictement Propre à Chaque Compte)
 
-> **Règle absolue :** Pour tout compte existant ou nouvellement créé (à l'inscription ou à la connexion), le message d'accueil du Tableau de bord **DOIT OBLIGATOIREMENT UTILISER LE VÉRITABLE NOM ET PRÉNOM RENSEIGNÉ PAR L'UTILISATEUR AINSI QUE LE NOM EXACT DE SON ENTREPRISE**.
+> **Règle absolue :** Pour tout compte existant ou nouvellement créé (à l'inscription ou à la connexion), le message d'accueil du Tableau de bord **DOIT OBLIGATOIREMENT UTILISER LE VÉRITABLE NOM ET PRÉNOM DE L'UTILISATEUR CONNECTÉ AINSI QUE LE NOM EXACT DE SON ENTREPRISE**. 
+> Il est strictement interdit d'afficher les informations d'un autre utilisateur en valeur par défaut.
 
 ### 🔒 Directives Strictes de Personnalisation :
-1. **Message de Bienvenue Nominal** :
-   - Titre principal : `Bienvenue, {full_name} 👋` (ex: `Bienvenue, SANOGO MOUSSA 👋`).
+1. **Message de Bienvenue Nominal Propre à l'Utilisateur** :
+   - Titre principal : `Bienvenue, {NOM ET PRENOM DE L'UTILISATEUR} 👋`
 2. **Badge & Espace Entreprise Dédié** :
-   - Badge supérieur : `Espace Facturation — {company_name}` (ex: `Espace Facturation — RIPA BOUTIQUE`).
-   - Paragraphe d'accueil : `Votre espace de pilotage pour {company_name} est prêt. Suivez vos créances en temps réel, encaissez vos paiements via Wave & Orange Money et émettez des factures fiscales conformes UEMOA (TVA 18%).`
-3. **Synchronisation Automatique à l'Inscription** :
-   - Dès qu'un utilisateur s'inscrit (`/register`), son `full_name` et `company_name` sont stockés dans `user_metadata` Supabase, dans l'organisation associée et dans la session de navigation pour une application instantanée dès la première seconde de connexion.
+   - Badge supérieur : `Espace Facturation — {NOM DE L'ENTREPRISE}`
+   - Paragraphe d'accueil : `Votre espace de pilotage pour {NOM DE L'ENTREPRISE} est prêt. Suivez vos créances en temps réel, encaissez vos paiements via Wave & Orange Money et émettez des factures fiscales conformes UEMOA (TVA 18%).`
+3. **Synchronisation Automatique & Isolation** :
+   - Dès qu'un utilisateur s'inscrit (`/register`) ou se connecte (`/login`), son `full_name` et son `company_name` sont immédiatement chargés depuis Supabase Auth / PostgreSQL / Session et injectés dans son espace personnel.
+
+---
+
+## 🔒 10. Règle Obligatoire & Absolue : Soldes Initiaux à 0 & Étanchéité Stricte des Données par Compte
+
+> **Règle absolue :**
+> 1. À la création de TOUT compte (existant ou futur), **TOUS LES SOLDES DOIVENT ÊTRE STRICTEMENT À 0 FCFA (0%)** : Total facturé = 0 FCFA, Total encaissé = 0 FCFA, Reste à recouvrer = 0 FCFA, Factures en retard = 0 FCFA.
+> 2. **Seules les informations et données saisies par un compte spécifique doivent figurer dans ce compte uniquement**. Aucune facture, aucun client, aucun fournisseur ou paiement d'un autre compte ne doit être accessible, visible ou fusionné.
+> 3. Cette règle est **obligatoire et permanente** pour tous les comptes créés et tous ceux qui seront créés.
 
 

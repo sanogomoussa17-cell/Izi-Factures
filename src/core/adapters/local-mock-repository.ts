@@ -28,9 +28,25 @@ export class LocalMockRepository implements IInvoiceRepository {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
   }
 
-  private getItem<T>(key: string, defaultValue: T): T {
+  private getStorageKey(baseKey: string): string {
+    if (!this.isBrowser()) return baseKey;
+    try {
+      const session = localStorage.getItem('izifactures_session');
+      if (session) {
+        const parsed = JSON.parse(session);
+        const userKey = parsed.id || parsed.email;
+        if (userKey) {
+          return `${baseKey}_${String(userKey).replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+        }
+      }
+    } catch (e) {}
+    return baseKey;
+  }
+
+  private getItem<T>(baseKey: string, defaultValue: T): T {
     if (!this.isBrowser()) return defaultValue;
     try {
+      const key = this.getStorageKey(baseKey);
       const data = localStorage.getItem(key);
       if (!data) return defaultValue;
       const parsed = JSON.parse(data);
@@ -58,12 +74,13 @@ export class LocalMockRepository implements IInvoiceRepository {
     }
   }
 
-  private setItem<T>(key: string, value: T): void {
+  private setItem<T>(baseKey: string, value: T): void {
     if (!this.isBrowser()) return;
     try {
+      const key = this.getStorageKey(baseKey);
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
-      console.error(`Failed to save to localStorage for key ${key}`, e);
+      console.error(`Failed to save to localStorage for key ${baseKey}`, e);
     }
   }
 

@@ -141,8 +141,18 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
         }
 
         const { data, error } = await query;
-        if (!error && data && data.length > 0) {
-          supabaseInvoices = data.map((row: any) => this.mapInvoiceRow(row));
+        if (!error && data) {
+          let invoices = data.map((row: any) => this.mapInvoiceRow(row));
+          if (filters?.search) {
+            const q = filters.search.toLowerCase();
+            invoices = invoices.filter(
+              (inv) =>
+                inv.invoiceNumber.toLowerCase().includes(q) ||
+                inv.client?.name?.toLowerCase().includes(q) ||
+                inv.client?.companyName?.toLowerCase().includes(q)
+            );
+          }
+          return invoices;
         } else if (error) {
           console.warn('Erreur getInvoices Supabase:', error.message);
         }
@@ -151,40 +161,7 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
       }
     }
 
-    const localInvoices = await localRepository.getInvoices(filters);
-
-    // Fusion sans doublon (Supabase prioritaire, complété par les factures locales)
-    const invoiceMap = new Map<string, Invoice>();
-    for (const inv of localInvoices) {
-      invoiceMap.set(inv.id, inv);
-      if (inv.invoiceNumber) invoiceMap.set(inv.invoiceNumber, inv);
-    }
-    for (const inv of supabaseInvoices) {
-      invoiceMap.set(inv.id, inv);
-      if (inv.invoiceNumber) invoiceMap.set(inv.invoiceNumber, inv);
-    }
-
-    let merged = Array.from(new Set(Array.from(invoiceMap.values())));
-
-    if (filters?.search) {
-      const q = filters.search.toLowerCase();
-      merged = merged.filter(
-        (inv) =>
-          inv.invoiceNumber.toLowerCase().includes(q) ||
-          inv.client?.name?.toLowerCase().includes(q) ||
-          inv.client?.companyName?.toLowerCase().includes(q)
-      );
-    }
-
-    if (filters?.status && filters.status !== 'ALL') {
-      merged = merged.filter((inv) => inv.status === filters.status || inv.paymentStatus === filters.status);
-    }
-
-    if (filters?.clientId) {
-      merged = merged.filter((inv) => inv.clientId === filters.clientId);
-    }
-
-    return merged;
+    return localRepository.getInvoices(filters);
   }
 
   async getInvoiceById(id: string): Promise<Invoice | null> {
@@ -485,8 +462,19 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
         }
 
         const { data, error } = await query;
-        if (!error && data && data.length > 0) {
-          supabaseClients = data.map((row: any) => this.mapClientRow(row));
+        if (!error && data) {
+          let clients = data.map((row: any) => this.mapClientRow(row));
+          if (search) {
+            const q = search.toLowerCase();
+            clients = clients.filter(
+              (c) =>
+                c.name.toLowerCase().includes(q) ||
+                c.companyName?.toLowerCase().includes(q) ||
+                c.email?.toLowerCase().includes(q) ||
+                c.phone?.toLowerCase().includes(q)
+            );
+          }
+          return clients;
         } else if (error) {
           console.warn('Erreur getClients Supabase:', error.message);
         }
@@ -495,33 +483,7 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
       }
     }
 
-    const localClients = await localRepository.getClients(search);
-
-    // Fusion sans doublon (Supabase prioritaire, complété par les créations locales)
-    const clientMap = new Map<string, Client>();
-    for (const c of localClients) {
-      clientMap.set(c.id, c);
-      if (c.name) clientMap.set(c.name.trim().toLowerCase(), c);
-    }
-    for (const c of supabaseClients) {
-      clientMap.set(c.id, c);
-      if (c.name) clientMap.set(c.name.trim().toLowerCase(), c);
-    }
-
-    let merged = Array.from(new Set(Array.from(clientMap.values())));
-
-    if (search) {
-      const q = search.toLowerCase();
-      merged = merged.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.companyName?.toLowerCase().includes(q) ||
-          c.email?.toLowerCase().includes(q) ||
-          c.phone?.toLowerCase().includes(q)
-      );
-    }
-
-    return merged;
+    return localRepository.getClients(search);
   }
 
   async getClientById(id: string): Promise<Client | null> {
@@ -627,8 +589,8 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
           query = query.or(`name.ilike.%${search}%,company_name.ilike.%${search}%,category.ilike.%${search}%`);
         }
         const { data, error } = await query;
-        if (!error && data && data.length > 0) {
-          supabaseSuppliers = data.map((s: any) => ({
+        if (!error && data) {
+          let suppliers = data.map((s: any) => ({
             id: s.id,
             name: s.name,
             companyName: s.company_name,
@@ -644,24 +606,24 @@ export class SupabaseInvoiceRepository implements IInvoiceRepository {
             balanceDue: s.balance_due || 0,
             createdAt: s.created_at,
           }));
+          if (search) {
+            const q = search.toLowerCase();
+            suppliers = suppliers.filter(
+              (s) =>
+                s.name.toLowerCase().includes(q) ||
+                s.companyName?.toLowerCase().includes(q) ||
+                s.email?.toLowerCase().includes(q) ||
+                s.phone?.toLowerCase().includes(q)
+            );
+          }
+          return suppliers;
         }
       } catch (err) {
         console.warn('Exception getSuppliers Supabase:', err);
       }
     }
 
-    const localSuppliers = await localRepository.getSuppliers(search);
-    const supplierMap = new Map<string, Supplier>();
-    for (const s of localSuppliers) {
-      supplierMap.set(s.id, s);
-      if (s.name) supplierMap.set(s.name.trim().toLowerCase(), s);
-    }
-    for (const s of supabaseSuppliers) {
-      supplierMap.set(s.id, s);
-      if (s.name) supplierMap.set(s.name.trim().toLowerCase(), s);
-    }
-
-    return Array.from(new Set(Array.from(supplierMap.values())));
+    return localRepository.getSuppliers(search);
   }
 
   async createSupplier(supplier: Omit<Supplier, 'id' | 'createdAt' | 'totalPurchased' | 'totalPaid' | 'balanceDue'>): Promise<Supplier> {
