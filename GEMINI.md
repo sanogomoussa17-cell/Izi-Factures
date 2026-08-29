@@ -214,3 +214,22 @@ Lors de vos interventions sur cette codebase, veuillez respecter scrupuleusement
    - Confirmer le succès à l'utilisateur avec le lien direct vers le dépôt :
      👉 **`https://github.com/sanogomoussa17-cell/Izi-Factures`**
    - Fournir un récapitulatif clair et structuré des modifications poussées.
+
+---
+
+## 🚫 8. Règle Obligatoire & Absolue : Zéro Donnée Virtuelle / Factice (Pure Real Data Only)
+
+> **Règle absolue :** À l'ouverture d'un compte, à la connexion, ou lors de toute navigation (factures, clients, fournisseurs, métriques de tableau de bord), l'application **NE DOIT JAMAIS AFFICHER DE DONNÉES VIRTUELLES, FICTIVES OU PRÉ-REMPLIES PAR DÉFAUT**. 
+> Seules les **véritables informations saisies et créées par l'utilisateur** doivent être affichées et prises en compte.
+
+### 🔒 Directives Strictes :
+1. **État Initial Neutre & Vierge (`[]`)** :
+   - Les listes initiales de factures (`INITIAL_INVOICES`), clients (`INITIAL_CLIENTS`), et fournisseurs (`INITIAL_SUPPLIERS`) doivent obligatoirement rester des tableaux vides (`[]`).
+   - Tout compte neuf ou session fraîche commence avec un tableau de bord et des répertoires vierges prêts à accueillir les vraies données de l'utilisateur.
+2. **Interdiction Formelle des Fixtures Factices** :
+   - Il est strictement interdit d'injecter des fausses factures d'exemple (ex: `FAC-2026-0042`), de faux clients d'exemple (ex: `Angelina Caroline`, `Sahel Logistique`, `Cansaas Agency`) ou de faux fournisseurs.
+3. **Nettoyage & Filtrage Automatique des Données Résiduelles** :
+   - Les adaptateurs de persistance (`SupabaseInvoiceRepository`, `LocalMockRepository`) doivent automatiquement filtrer et éliminer toute donnée factice / mock legacy qui pourrait subsister dans les caches ou le stockage local.
+4. **Calculs & Métriques 100% Réels** :
+   - Les indicateurs financiers (Total facturé, Total encaissé, Taux de recouvrement, Factures en retard) doivent être calculés exclusivement sur les factures réelles émises par l'utilisateur. Si aucune facture n'existe, les métriques doivent afficher `0 FCFA` (0%).
+
