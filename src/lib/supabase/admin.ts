@@ -1,31 +1,41 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
 let cachedAdmin: SupabaseClient | null = null;
 
-export function getSupabaseAdmin(): SupabaseClient {
+export function getSupabaseAdmin(): SupabaseClient | null {
   if (cachedAdmin) return cachedAdmin;
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Supabase configuration is missing in environment variables');
-  }
-  cachedAdmin = createClient(supabaseUrl, serviceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
-  return cachedAdmin;
-}
 
-export const supabaseAdmin = getSupabaseAdmin();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey || supabaseUrl.includes('placeholder')) {
+    return null;
+  }
+
+  try {
+    cachedAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+    return cachedAdmin;
+  } catch (e) {
+    console.warn('Erreur initialisation Supabase Admin:', e);
+    return null;
+  }
+}
 
 /**
  * Résout l'organisation liée à la requête utilisateur (Mobile & Ordinateur)
  */
 export async function resolveOrganizationForRequest(req: Request) {
   const admin = getSupabaseAdmin();
+  if (!admin) {
+    return { org: null, orgId: null, userEmail: '', userId: '' };
+  }
 
   // 1. Récupérer les identifiants passés dans les headers
   const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
@@ -74,7 +84,6 @@ export async function resolveOrganizationForRequest(req: Request) {
     .maybeSingle();
 
   if (defaultOrg) {
-    // Si l'utilisateur connecté est sanogomoussa17@gmail.com ou similaire et que l'org par défaut existe
     return { org: defaultOrg, orgId: defaultOrg.id, userEmail, userId };
   }
 
@@ -99,7 +108,8 @@ export async function resolveOrganizationForRequest(req: Request) {
     .single();
 
   if (createOrgErr || !newOrg) {
-    throw new Error(`Impossible de créer ou résoudre une organisation: ${createOrgErr?.message}`);
+    console.warn(`Impossible de créer une organisation: ${createOrgErr?.message}`);
+    return { org: null, orgId: null, userEmail, userId };
   }
 
   return { org: newOrg, orgId: newOrg.id, userEmail, userId };

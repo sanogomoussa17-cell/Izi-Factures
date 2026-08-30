@@ -7,7 +7,14 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const admin = getSupabaseAdmin();
+    if (!admin) {
+      return NextResponse.json({ success: false, error: 'Database service unavailable' }, { status: 200 });
+    }
+
     const { org, orgId } = await resolveOrganizationForRequest(req);
+    if (!orgId) {
+      return NextResponse.json({ success: false, error: 'Organization unavailable' }, { status: 200 });
+    }
 
     const body = await req.json().catch(() => ({}));
     const { action, payload } = body;
